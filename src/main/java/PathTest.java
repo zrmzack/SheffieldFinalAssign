@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PathTest extends JFrame {
+
     public PathTest() {
         this.setTitle("进度条的使用");
         setSize(150, 100);
@@ -13,7 +14,7 @@ public class PathTest extends JFrame {
 
         final JProgressBar progressBar = new JProgressBar();
         progressBar.setStringPainted(true);
-        Button button = new Button("OK");
+        final Button button = new Button("OK");
         button.setEnabled(false);
         container.add(progressBar, BorderLayout.NORTH);
         container.add(button, BorderLayout.CENTER);

@@ -14,8 +14,13 @@ import java.util.List;
  * @create 2019-12-05-4:52
  */
 public class Getinfo extends JFrame {
+    private static final String PATHDAFF = System.getProperty("user.dir") + "\\src\\main\\java\\daffodils.txt";
+    private static final String PATHEARN = System.getProperty("user.dir") + "\\src\\main\\java\\Earnest.txt";
+    private static final String PATHPRID = System.getProperty("user.dir") + "\\src\\main\\java\\PrideAndPrejudice.txt";
+    private Button button;
+
     public ArrayList getAlldoctext(String pathname) {
-        ArrayList<String> arrayList = new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<String>();
         try {
             File file = new File(pathname);
             InputStreamReader inputStreamReader = new InputStreamReader((new FileInputStream(file)));
@@ -33,7 +38,7 @@ public class Getinfo extends JFrame {
     }
 
     public ArrayList getAlltexttitle(String pathname) {
-        ArrayList<String> arrayList = new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<String>();
         try {
             File file = new File(pathname);
             InputStreamReader inputStreamReader = new InputStreamReader((new FileInputStream(file)));
@@ -111,13 +116,12 @@ public class Getinfo extends JFrame {
     public List getTopTenWords(HashMap hashMap) {
         List<Map.Entry<String, Integer>> list = new ArrayList<>(hashMap.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
             public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
                 return o2.getValue().compareTo(o1.getValue());
             }
         });
         //System.out.println(list);
-        List listwords = new LinkedList<>();
+        List listwords = new LinkedList<String>();
         for (int x = 0; x <= 9; x++) {
             listwords.add(list.get(x));
         }
@@ -143,45 +147,61 @@ public class Getinfo extends JFrame {
         return temp;
     }
 
-    public void addprogress(int start, int end) {
-        setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        JFrame jFrame = new JFrame();
-        JProgressBar progressBar = new JProgressBar();
-        progressBar.setStringPainted(true);
-        Button button = new Button("OK");
-        button.setSize(30, 20);
-        button.setEnabled(false);
-        jFrame.add(progressBar, BorderLayout.NORTH);
-        jFrame.add(button, BorderLayout.CENTER);
-        new Thread() {
-            public void run() {
-                for (int i = start; i <= end; i++) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    progressBar.setValue(i);
-                    progressBar.setString("loading");
-                }
-                progressBar.setString("loaded");
-                button.setEnabled(true);
-
-            }
-        }.start();
-
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-                //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-
-                setVisible(false);
-            }
-        });
-        this.setVisible(true);
+    public String titleUserInput(String title) {
+        String Path = "";
+        if (title.equalsIgnoreCase("poem")) {
+            Path = PATHDAFF;
+            return Path;
+        } else if (title.equalsIgnoreCase("play")) {
+            Path = PATHEARN;
+            return Path;
+        } else if (title.equalsIgnoreCase("Novel")) {
+            Path = PATHPRID;
+            return Path;
+        } else {
+            Path = title;
+            return Path;
+        }
     }
 
+
+//    public void addprogress(int start, int end, String title) {
+//        setVisible(true);
+//        setSize(200, 200);
+//        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//        Container container = this.getContentPane();
+//        JProgressBar progressBar = new JProgressBar();
+//        progressBar.setStringPainted(true);
+//        button = new Button("OK");
+//        button.setSize(30, 20);
+//        button.setEnabled(false);
+//        container.add(progressBar, BorderLayout.NORTH);
+//        container.add(button, BorderLayout.CENTER);
+//
+//        new Thread() {
+//            public void run() {
+//                for (int i = start; i <= end; i++) {
+//                    try {
+//                        Thread.sleep(10);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    progressBar.setValue(i);
+//                    progressBar.setString("loading");
+//                }
+//                progressBar.setString("loaded");
+//                button.setEnabled(true);
+//
+//            }
+//        }.start();
+//
+//        button.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                setVisible(false);
+//            }
+//        });
+//        setVisible(true);
+//    }
 }
+

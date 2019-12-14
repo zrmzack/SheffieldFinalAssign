@@ -1,4 +1,5 @@
 import jdk.internal.org.objectweb.asm.Handle;
+import sun.applet.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,8 @@ public class DocumentViewer extends JFrame implements ActionListener {
     private static final String PATHEARN = System.getProperty("user.dir") + "\\src\\main\\java\\Earnest.txt";
     private static final String PATHPRID = System.getProperty("user.dir") + "\\src\\main\\java\\PrideAndPrejudice.txt";
     private String Path = "";
+    private static String MainTextButton = "show";
+    private static String OverStatsButton = "alldoc";
 
     public DocumentViewer() {
         setSize(400, 300);
@@ -52,9 +55,9 @@ public class DocumentViewer extends JFrame implements ActionListener {
         container.add(showTitle, BorderLayout.CENTER);
 
         JPanel jPanel3 = new JPanel();
-        showmaintext = new JButton("show");
+        showmaintext = new JButton(MainTextButton);
         showmaintext.addActionListener(this);
-        statistics = new JButton("alldoc");
+        statistics = new JButton(OverStatsButton);
         statistics.addActionListener(this);
         jPanel3.add(showmaintext);
         jPanel3.add(statistics);
@@ -77,6 +80,8 @@ public class DocumentViewer extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        drawProgress drawProgress = new drawProgress();
+        Getinfo getinfo = new Getinfo();
         String filename = input.getText();
         if (filename.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Please input the title", "alert", JOptionPane.ERROR_MESSAGE);
@@ -93,44 +98,13 @@ public class DocumentViewer extends JFrame implements ActionListener {
                 } else {
                     Path = filename;
                 }
-                Getinfo getinfo = new Getinfo();
                 arrayListTitle = getinfo.getAlltexttitle(Path);
                 String title = getinfo.getTextString(arrayListTitle);
                 showTitle.setText(title);
             } else if (((JButton) source).getText().equals("show")) {
-                if (Path.equalsIgnoreCase(PATHDAFF) || Path.equalsIgnoreCase(PATHEARN)) {
-                    Object[] options = {"OK", "CANCEL"};
-                    JOptionPane.showOptionDialog(null, "Click OK to continue", "Warning",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, options, options[0]);
-                    new ShowMainText();
-                    load.setEnabled(false);
-                } else {
-                    Object[] options = {"OK", "CANCEL"};
-                    JOptionPane.showOptionDialog(null, "Click OK to continue", "Warning",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, options, options[0]);
-                    new ShowMainText();
-                    load.setEnabled(false);
-                }
-
-
+                drawProgress.addprogress(1, 100, Path,MainTextButton);
             } else {
-                if (Path.equalsIgnoreCase(PATHDAFF) || Path.equalsIgnoreCase(PATHEARN)) {
-                    Object[] options = {"OK", "CANCEL"};
-                    JOptionPane.showOptionDialog(null, "Click OK to continue", "Warning",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, options, options[0]);
-                    new showalldoc();
-                    showmaintext.setEnabled(false);
-                } else {
-                    Object[] options = {"OK", "CANCEL"};
-                    JOptionPane.showOptionDialog(null, "Click OK to continue", "Warning",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, options, options[0]);
-                    new showalldoc();
-                    showmaintext.setEnabled(false);
-                }
+                drawProgress.addprogress(1, 100, Path,OverStatsButton);
             }
         }
 
@@ -151,18 +125,7 @@ public class DocumentViewer extends JFrame implements ActionListener {
             //Poem  daffodils
             //Play  Earnest
             //Novel PrideAndPrejudice
-            String Path = "";
-            if (mainText.equalsIgnoreCase("poem")) {
-                Path = PATHDAFF;
-
-            } else if (mainText.equalsIgnoreCase("play")) {
-                Path = PATHEARN;
-            } else if (mainText.equalsIgnoreCase("Novel")) {
-                Path = PATHPRID;
-
-            } else {
-                Path = mainText;
-            }
+            Path = getinfo.titleUserInput(mainText);
             arrayListTitle = getinfo.getAlltexttitle(Path);
             arrayListAlltext = getinfo.getAlldoctext(Path);
             arrayListmainText = getinfo.getmaintext(arrayListTitle, arrayListAlltext);
@@ -175,7 +138,7 @@ public class DocumentViewer extends JFrame implements ActionListener {
             jScrollPane.setViewportView(showMaintext);
             container.add(jScrollPane, BorderLayout.CENTER);
             this.setVisible(true);
-            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            this.setDefaultCloseOperation(2);
         }
 
 
@@ -188,6 +151,7 @@ public class DocumentViewer extends JFrame implements ActionListener {
         private JTextArea showalldoc;
         private JTextArea tenWords;
         private HashMap hashMap = new HashMap();
+        Getinfo getinfo = new Getinfo();
 
         public showalldoc() {
             Container container = this.getContentPane();
@@ -197,18 +161,9 @@ public class DocumentViewer extends JFrame implements ActionListener {
             tenWords.setSize(400, 200);
             setSize(400, 300);
             setVisible(true);
-            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            this.setDefaultCloseOperation(2);
             String temp = input.getText();
-            String Path = "";
-            if (temp.equalsIgnoreCase("poem")) {
-                Path = PATHDAFF;
-            } else if (temp.equalsIgnoreCase("play")) {
-                Path = PATHEARN;
-            } else if (temp.equalsIgnoreCase("Novel")) {
-                Path = PATHPRID;
-            } else {
-                Path = temp;
-            }
+            Path = getinfo.titleUserInput(temp);
 
 
             Getinfo getinfo = new Getinfo();
@@ -228,10 +183,68 @@ public class DocumentViewer extends JFrame implements ActionListener {
             tenWords.setEnabled(false);
             container.add(showalldoc, BorderLayout.SOUTH);
             container.add(tenWords, BorderLayout.CENTER);
+        }
+    }
 
+    class drawProgress extends JFrame {
+        Button button;
+        int time = 100;
 
+        public void addprogress(int start, int end, String title, String buttonName) {
+            setVisible(true);
+            setSize(200, 200);
+            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            Container container = this.getContentPane();
+            JProgressBar progressBar = new JProgressBar();
+            progressBar.setStringPainted(true);
+
+            button = new Button("OK");
+            button.setSize(30, 20);
+            button.setEnabled(false);
+            container.add(progressBar, BorderLayout.NORTH);
+            container.add(button, BorderLayout.CENTER);
+            if (title.equalsIgnoreCase(PATHDAFF)) {
+                time = 10;
+            } else if (title.equalsIgnoreCase(PATHEARN)) {
+                time = 100;
+            } else {
+                time = 1000;
+            }
+            new Thread() {
+                public void run() {
+                    for (int i = start; i <= end; i++) {
+                        try {
+                            Thread.sleep(time);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        progressBar.setValue(i);
+                        progressBar.setString("loading");
+                    }
+                    progressBar.setString("loaded");
+                    button.setEnabled(true);
+
+                }
+            }.start();
+
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(false);
+                    if (buttonName.equalsIgnoreCase(MainTextButton)) {
+                        new ShowMainText();
+                    } else {
+                        new showalldoc();
+                    }
+                }
+            });
+            setVisible(true);
         }
     }
 
 
 }
+
+
+
+

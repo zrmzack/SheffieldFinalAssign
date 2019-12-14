@@ -20,7 +20,7 @@ public class TestTest extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getinfo.addprogress(1,100);
+                //getinfo.addprogress(1,100,);
             }
         });
         container.add(button);
