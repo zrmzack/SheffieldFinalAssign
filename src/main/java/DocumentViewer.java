@@ -1,13 +1,7 @@
-import jdk.internal.dynalink.beans.StaticClass;
-import jdk.internal.org.objectweb.asm.Handle;
-import sun.applet.Main;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
