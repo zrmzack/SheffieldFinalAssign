@@ -208,7 +208,7 @@ public class DocumentViewer extends JFrame implements ActionListener {
             } else if (title.equalsIgnoreCase(PATHEARN)) {
                 time = 100;
             } else {
-                time = 1000;
+                time = 1500;
             }
             new Thread() {
                 public void run() {
