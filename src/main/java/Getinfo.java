@@ -33,6 +33,9 @@ public class Getinfo extends JFrame {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Faild load Text", "error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Check Path Of Text", "error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Check Path Of Text");
         }
         return arrayList;
     }
@@ -53,6 +56,9 @@ public class Getinfo extends JFrame {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Faild load Text", "error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Check Path Of Text", "error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Check Path Of Text");
         }
         return arrayList;
     }
@@ -149,13 +155,13 @@ public class Getinfo extends JFrame {
 
     public String titleUserInput(String title) {
         String Path = "";
-        if (title.equalsIgnoreCase("poem")) {
+        if (title.equalsIgnoreCase("poem") || title.equalsIgnoreCase("daffodils")) {
             Path = PATHDAFF;
             return Path;
-        } else if (title.equalsIgnoreCase("play")) {
+        } else if (title.equalsIgnoreCase("play") || title.equalsIgnoreCase("Earnest")) {
             Path = PATHEARN;
             return Path;
-        } else if (title.equalsIgnoreCase("Novel")) {
+        } else if (title.equalsIgnoreCase("Novel") || title.equalsIgnoreCase("PrideAndPrejudice")) {
             Path = PATHPRID;
             return Path;
         } else {

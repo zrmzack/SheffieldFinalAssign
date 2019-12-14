@@ -1,3 +1,4 @@
+import jdk.internal.dynalink.beans.StaticClass;
 import jdk.internal.org.objectweb.asm.Handle;
 import sun.applet.Main;
 
@@ -34,13 +35,14 @@ public class DocumentViewer extends JFrame implements ActionListener {
     private String Path = "";
     private static String MainTextButton = "show";
     private static String OverStatsButton = "alldoc";
+    private int timeused = 10;
 
     public DocumentViewer() {
         setSize(400, 300);
         Container container = this.getContentPane();
         container.setVisible(true);
         container.setLayout(new BorderLayout());
-
+        System.out.println(PATHDAFF);
 
         load = new JButton("load");
         load.addActionListener(this);
@@ -70,11 +72,6 @@ public class DocumentViewer extends JFrame implements ActionListener {
         DocumentViewer documentViewer = new DocumentViewer();
         documentViewer.setVisible(true);
         documentViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        System.out.println(documentViewer.getFilePath());
-    }
-
-    private URL getFilePath() {
-        return this.getClass().getClassLoader().getResource("");
     }
 
 
@@ -88,12 +85,12 @@ public class DocumentViewer extends JFrame implements ActionListener {
         } else {
             Object source = e.getSource();
             if (((JButton) source).getText().equals("load")) {
-                if (filename.equalsIgnoreCase("poem")) {
+                if (filename.equalsIgnoreCase("poem") || filename.equalsIgnoreCase("daffodils")) {
                     Path = PATHDAFF;
                     System.out.println(Path);
-                } else if (filename.equalsIgnoreCase("play")) {
+                } else if (filename.equalsIgnoreCase("play") || filename.equalsIgnoreCase("Earnest")) {
                     Path = PATHEARN;
-                } else if (filename.equalsIgnoreCase("Novel")) {
+                } else if (filename.equalsIgnoreCase("Novel") || filename.equalsIgnoreCase("PrideAndPrejudice")) {
                     Path = PATHPRID;
                 } else {
                     Path = filename;
@@ -102,9 +99,10 @@ public class DocumentViewer extends JFrame implements ActionListener {
                 String title = getinfo.getTextString(arrayListTitle);
                 showTitle.setText(title);
             } else if (((JButton) source).getText().equals("show")) {
-                drawProgress.addprogress(1, 100, Path,MainTextButton);
+                drawProgress.addprogress(1, 100, Path, MainTextButton);
+
             } else {
-                drawProgress.addprogress(1, 100, Path,OverStatsButton);
+                drawProgress.addprogress(1, 100, Path, OverStatsButton);
             }
         }
 
@@ -118,6 +116,7 @@ public class DocumentViewer extends JFrame implements ActionListener {
         private ArrayList arrayListmainText;
 
         public ShowMainText() {
+
             showMaintext = new JTextArea();
             showMaintext.setEnabled(false);
             getinfo = new Getinfo();
@@ -126,9 +125,13 @@ public class DocumentViewer extends JFrame implements ActionListener {
             //Play  Earnest
             //Novel PrideAndPrejudice
             Path = getinfo.titleUserInput(mainText);
-            arrayListTitle = getinfo.getAlltexttitle(Path);
-            arrayListAlltext = getinfo.getAlldoctext(Path);
-            arrayListmainText = getinfo.getmaintext(arrayListTitle, arrayListAlltext);
+            try {
+                arrayListTitle = getinfo.getAlltexttitle(Path);
+                arrayListAlltext = getinfo.getAlldoctext(Path);
+                arrayListmainText = getinfo.getmaintext(arrayListTitle, arrayListAlltext);
+            } catch (Exception e) {
+                System.out.println("File Load Error");
+            }
             setSize(400, 300);
             Container container = this.getContentPane();
             jScrollPane = new JScrollPane();
@@ -137,7 +140,24 @@ public class DocumentViewer extends JFrame implements ActionListener {
             jScrollPane.add(showMaintext);
             jScrollPane.setViewportView(showMaintext);
             container.add(jScrollPane, BorderLayout.CENTER);
-            this.setVisible(true);
+
+
+            setVisible(true);
+
+
+//            if (mainText.equalsIgnoreCase("poem")) {
+//                timeused = 5000;
+//                new Thread(() -> {
+//                    try {
+//                        Thread.sleep(timeused);
+//
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//            }
+
+
             this.setDefaultCloseOperation(2);
         }
 
@@ -167,9 +187,13 @@ public class DocumentViewer extends JFrame implements ActionListener {
 
 
             Getinfo getinfo = new Getinfo();
-            arrayListTitle = getinfo.getAlltexttitle(Path);
-            arrayListAlltext = getinfo.getAlldoctext(Path);
-            arrayListmainText = getinfo.getmaintext(arrayListTitle, arrayListAlltext);
+            try {
+                arrayListTitle = getinfo.getAlltexttitle(Path);
+                arrayListAlltext = getinfo.getAlldoctext(Path);
+                arrayListmainText = getinfo.getmaintext(arrayListTitle, arrayListAlltext);
+            } catch (Exception e) {
+                System.out.println("File Load Error");
+            }
             String tempMainText = getinfo.getTextString(arrayListmainText);
             //System.out.println(tempMainText);
 
@@ -191,8 +215,8 @@ public class DocumentViewer extends JFrame implements ActionListener {
         int time = 100;
 
         public void addprogress(int start, int end, String title, String buttonName) {
-            setVisible(true);
-            setSize(200, 200);
+            //setSize(200, 200);
+            setBounds(500, 500, 200, 200);
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             Container container = this.getContentPane();
             JProgressBar progressBar = new JProgressBar();
@@ -206,9 +230,9 @@ public class DocumentViewer extends JFrame implements ActionListener {
             if (title.equalsIgnoreCase(PATHDAFF)) {
                 time = 10;
             } else if (title.equalsIgnoreCase(PATHEARN)) {
-                time = 100;
+                time = 20;
             } else {
-                time = 1500;
+                time = 10;
             }
             new Thread() {
                 public void run() {
@@ -232,9 +256,25 @@ public class DocumentViewer extends JFrame implements ActionListener {
                 public void actionPerformed(ActionEvent e) {
                     setVisible(false);
                     if (buttonName.equalsIgnoreCase(MainTextButton)) {
-                        new ShowMainText();
+                        if (title.equalsIgnoreCase(PATHEARN) || title.equalsIgnoreCase(PATHDAFF)) {
+                            new ShowMainText();
+                        } else if (title.equalsIgnoreCase(PATHPRID)) {
+                            JOptionPane.showMessageDialog(null, "Need More Time To Analyse text, Please Wait!");
+                            new ShowMainText();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Check Path Of Text", "error", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
-                        new showalldoc();
+                        //|| title.equalsIgnoreCase(PATHDAFF)
+                        if (title.equalsIgnoreCase(PATHDAFF)) {
+                            new showalldoc();
+                        } else if (title.equalsIgnoreCase(PATHPRID)) {
+                            JOptionPane.showMessageDialog(null, "Need More Time To Analyse text, Please Wait!");
+                            new showalldoc();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Check Path Of Text", "error", JOptionPane.ERROR_MESSAGE);
+
+                        }
                     }
                 }
             });
